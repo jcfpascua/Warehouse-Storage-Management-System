@@ -28,7 +28,7 @@ public class Main extends JFrame {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Product Section
+        // Label and Entry fields
         gbc.gridx = 0;
         gbc.gridy = 0;
         panel.add(new JLabel("Product ID:"), gbc);
@@ -120,48 +120,82 @@ public class Main extends JFrame {
         getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
 
+    // Button Methods
     private void addProduct() {
         String id = idField.getText();
         String name = nameField.getText();
-        int quantity = Integer.parseInt(quantityField.getText());
-        double price = Double.parseDouble(priceField.getText());
+        String quantityStr = quantityField.getText();
+        String priceStr = priceField.getText();
         String storage = storageField.getText();
     
-        if (id.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a Product ID.");
+        if (id.isEmpty() || name.isEmpty() || quantityStr.isEmpty() || priceStr.isEmpty() || storage.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please complete all fields.");
+            return;
+        }
+    
+        int quantity;
+        double price;
+    
+        try {
+            quantity = Integer.parseInt(quantityStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid integer for quantity!");
+            return;
+        }
+    
+        try {
+            price = Double.parseDouble(priceStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid double for price!");
             return;
         }
     
         try {
             if (!db.isIdUnique(id)) {
-                JOptionPane.showMessageDialog(this, "Product ID already exists. Please enter a unique ID.");
+                JOptionPane.showMessageDialog(this, "Product ID must be unique!");
                 return;
             }
     
             Product product = new Product(id, name, quantity, price, storage);
             db.addProduct(product);
             JOptionPane.showMessageDialog(this, "Product added successfully!");
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity or price format.");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error adding product: " + e.getMessage());
         }
     }
+    
     
 
     // TODO: check if productId field is empty (done)
     private void updateProduct() {
         String id = idField.getText();
         String name = nameField.getText();
-        int quantity = Integer.parseInt(quantityField.getText());
-        double price = Double.parseDouble(priceField.getText());
+        String quantityStr = quantityField.getText();
+        String priceStr = priceField.getText();
         String storage = storageField.getText();
-
-        if (id.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a Product ID");
+    
+        if (id.isEmpty() || name.isEmpty() || quantityStr.isEmpty() || priceStr.isEmpty() || storage.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please complete all fields.");
             return;
         }
-
+    
+        int quantity;
+        double price;
+    
+        try {
+            quantity = Integer.parseInt(quantityStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid integer for quantity!");
+            return;
+        }
+    
+        try {
+            price = Double.parseDouble(priceStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid double for price!");
+            return;
+        }
+    
         Product product = new Product(id, name, quantity, price, storage);
         try {
             db.updateProduct(product);
